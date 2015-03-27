@@ -56,12 +56,13 @@ public class MyTextUtilities {
             String str, HashMap<JTextField, String> oldStrings) {
         Double value;
         String oldStr=oldStrings.get(field);
+        String newStr=field.getText();
         if (oldStr==null) {
             oldStr=str;
             oldStrings.put(field, str);
         }
         try {
-            value=Double.valueOf(field.getText());
+            value=Double.valueOf(newStr);
         } catch (NumberFormatException e) {
             field.setText(oldStr);
             value=Double.valueOf(oldStr);
@@ -72,7 +73,7 @@ public class MyTextUtilities {
             value=Double.valueOf(oldStr);
             return value;
         }
-        oldStrings.replace(field, oldStr);
+        oldStrings.replace(field, newStr);
         return value;
     }
 }

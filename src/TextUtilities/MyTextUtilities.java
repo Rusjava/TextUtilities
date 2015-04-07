@@ -6,7 +6,7 @@
 package TextUtilities;
 
 import javax.swing.JTextField;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for some text processing utilities
@@ -53,7 +53,7 @@ public class MyTextUtilities {
      */
     
     public static Double TestValueWithMemory(double min, double max, JTextField field,
-            String str, HashMap<JTextField, String> oldStrings) {
+            String str, Map<JTextField, String> oldStrings) {
         Double value;
         String oldStr=oldStrings.get(field);
         String newStr=field.getText();

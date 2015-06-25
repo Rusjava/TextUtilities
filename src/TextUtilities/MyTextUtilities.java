@@ -48,6 +48,37 @@ public class MyTextUtilities {
     
     /**
      * Checks that the entered value is within bounds provided and that the entered value is
+     * actually a double number. In case of error default value is substituted instead.
+     * @param min minimal value
+     * @param max maximal value
+     * @param field text field
+     * @param str default value
+     * @return either entered value or default value in case of an error
+     */
+    
+    public static Double TestValue(double min, double max, TextField field, String str) {
+        Double value;
+        String newStr = field.getText();
+        if (newStr.length() == 0) {
+            return 0.0;
+        }
+        try {
+            value=Double.valueOf(newStr);
+        } catch (NumberFormatException e) {
+            field.setText(str);
+            value=Double.valueOf(str);
+            return value;
+        }
+        if (value < min || value > max ) {
+            field.setText(str);
+            value=Double.valueOf(str);
+            return value;
+        }
+        return value;
+    }
+    
+    /**
+     * Checks that the entered value is within bounds provided and that the entered value is
      * actually a double number. In case of error default value from a HashMap is substituted instead.
      * @param min minimal value
      * @param max maximal value

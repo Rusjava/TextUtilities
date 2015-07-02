@@ -8,6 +8,9 @@ package TextUtilities;
 import javax.swing.JTextField;
 import java.util.Map;
 import javafx.scene.control.TextField;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.InternationalFormatter;
+import javax.swing.text.DefaultFormatterFactory;
 
 /**
  * Class for some text processing utilities
@@ -154,5 +157,24 @@ public class MyTextUtilities {
         
         oldStrings.replace(field, newStr);
         return value;
+    }
+    
+    /**
+     * Returning a JFormattedTextField with an Integer formatter installed 
+     * with min and max values
+     * @param initValue
+     * @param minValue
+     * @param maxValue
+     * @return
+     */
+    public static JFormattedTextField getIntegerFormattedTextField(Integer initValue, 
+            Integer minValue, Integer maxValue) {
+        JFormattedTextField box = new JFormattedTextField(initValue);
+        InternationalFormatter formatter
+                = (InternationalFormatter) (((DefaultFormatterFactory) box.getFormatterFactory()).getEditFormatter());
+        formatter.setMinimum(minValue);
+        formatter.setMaximum(maxValue);
+        ((InternationalFormatter) box.getFormatter()).setAllowsInvalid(true);
+        return box;
     }
 }

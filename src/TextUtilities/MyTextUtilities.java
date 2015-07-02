@@ -174,7 +174,7 @@ public class MyTextUtilities {
                 = (InternationalFormatter) (((DefaultFormatterFactory) box.getFormatterFactory()).getEditFormatter());
         formatter.setMinimum(minValue);
         formatter.setMaximum(maxValue);
-        ((InternationalFormatter) box.getFormatter()).setAllowsInvalid(true);
+        formatter.setCommitsOnValidEdit(false);
         return box;
     }
 }

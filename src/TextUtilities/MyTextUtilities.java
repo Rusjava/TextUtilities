@@ -5,8 +5,11 @@
  */
 package TextUtilities;
 
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.JTextField;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.TextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.InternationalFormatter;
@@ -14,14 +17,17 @@ import javax.swing.text.DefaultFormatterFactory;
 
 /**
  * Class for some text processing utilities
+ *
  * @author Ruslan feshchenko
  * @version 0.1
  */
 public class MyTextUtilities {
 
     /**
-     * Checks that the entered value is within bounds provided and that the entered value is
-     * actually a double number. In case of error default value is substituted instead.
+     * Checks that the entered value is within bounds provided and that the
+     * entered value is actually a double number. In case of error default value
+     * is substituted instead.
+     *
      * @param min minimal value
      * @param max maximal value
      * @param field text field
@@ -35,30 +41,31 @@ public class MyTextUtilities {
             return 0.0;
         }
         try {
-            value=Double.valueOf(newStr);
+            value = Double.valueOf(newStr);
         } catch (NumberFormatException e) {
             field.setText(str);
-            value=Double.valueOf(str);
+            value = Double.valueOf(str);
             return value;
         }
-        if (value < min || value > max ) {
+        if (value < min || value > max) {
             field.setText(str);
-            value=Double.valueOf(str);
+            value = Double.valueOf(str);
             return value;
         }
         return value;
     }
-    
+
     /**
-     * Checks that the entered value is within bounds provided and that the entered value is
-     * actually a double number. In case of error default value is substituted instead.
+     * Checks that the entered value is within bounds provided and that the
+     * entered value is actually a double number. In case of error default value
+     * is substituted instead.
+     *
      * @param min minimal value
      * @param max maximal value
      * @param field text field
      * @param str default value
      * @return either entered value or default value in case of an error
      */
-    
     public static Double TestValue(double min, double max, TextField field, String str) {
         Double value;
         String newStr = field.getText();
@@ -66,23 +73,25 @@ public class MyTextUtilities {
             return 0.0;
         }
         try {
-            value=Double.valueOf(newStr);
+            value = Double.valueOf(newStr);
         } catch (NumberFormatException e) {
             field.setText(str);
-            value=Double.valueOf(str);
+            value = Double.valueOf(str);
             return value;
         }
-        if (value < min || value > max ) {
+        if (value < min || value > max) {
             field.setText(str);
-            value=Double.valueOf(str);
+            value = Double.valueOf(str);
             return value;
         }
         return value;
     }
-    
+
     /**
-     * Checks that the entered value is within bounds provided and that the entered value is
-     * actually a double number. In case of error default value from a HashMap is substituted instead.
+     * Checks that the entered value is within bounds provided and that the
+     * entered value is actually a double number. In case of error default value
+     * from a HashMap is substituted instead.
+     *
      * @param min minimal value
      * @param max maximal value
      * @param field text field
@@ -90,38 +99,39 @@ public class MyTextUtilities {
      * @param oldStrings
      * @return either entered value or default value in case of an error
      */
-    
     public static Double TestValueWithMemory(double min, double max, JTextField field,
             String str, Map<JTextField, String> oldStrings) {
         Double value;
-        String oldStr=oldStrings.get(field);
-        String newStr=field.getText();
+        String oldStr = oldStrings.get(field);
+        String newStr = field.getText();
         if (newStr.length() == 0) {
             return 0.0;
         }
-        if (oldStr==null) {
-            oldStr=str;
+        if (oldStr == null) {
+            oldStr = str;
             oldStrings.put(field, str);
         }
         try {
-            value=Double.valueOf(newStr);
+            value = Double.valueOf(newStr);
         } catch (NumberFormatException e) {
             field.setText(oldStr);
-            value=Double.valueOf(oldStr);
+            value = Double.valueOf(oldStr);
             return value;
         }
-        if (value < min || value > max ) {
+        if (value < min || value > max) {
             field.setText(oldStr);
-            value=Double.valueOf(oldStr);
+            value = Double.valueOf(oldStr);
             return value;
         }
         oldStrings.replace(field, newStr);
         return value;
     }
-    
-     /**
-     * Checks that the entered value is within bounds provided and that the entered value is
-     * actually a double number. In case of error default value from a HashMap is substituted instead.
+
+    /**
+     * Checks that the entered value is within bounds provided and that the
+     * entered value is actually a double number. In case of error default value
+     * from a HashMap is substituted instead.
+     *
      * @param min minimal value
      * @param max maximal value
      * @param field text field
@@ -129,7 +139,6 @@ public class MyTextUtilities {
      * @param oldStrings
      * @return either entered value or default value in case of an error
      */
-    
     public static Double TestValueWithMemory(double min, double max, TextField field,
             String str, Map<TextField, String> oldStrings) {
         Double value;
@@ -154,28 +163,40 @@ public class MyTextUtilities {
             value = Double.valueOf(oldStr);
             return value;
         }
-        
+
         oldStrings.replace(field, newStr);
         return value;
     }
-    
+
     /**
-     * Returning a JFormattedTextField with an Integer formatter installed 
-     * with min and max values
+     * Returning a JFormattedTextField with an Integer formatter installed with
+     * min and max values
+     *
      * @param initValue
      * @param minValue
      * @param maxValue
      * @return
      */
-    public static JFormattedTextField getIntegerFormattedTextField(Integer initValue, 
+    public static JFormattedTextField getIntegerFormattedTextField(Integer initValue,
             Integer minValue, Integer maxValue) {
         JFormattedTextField box = new JFormattedTextField(initValue);
-        InternationalFormatter formatter
-                = (InternationalFormatter) (((DefaultFormatterFactory) box.getFormatterFactory()).getEditFormatter());
-        formatter.setMinimum(minValue);
-        formatter.setMaximum(maxValue);
-        formatter.setAllowsInvalid(true);
-        formatter.setCommitsOnValidEdit(false);
+        //Formatter getter names
+        String[] methods = {"getEditFormatter", "getDisplayFormatter", "getDefaultFormatter"};
+        //Default formatter factory
+        DefaultFormatterFactory factory = (DefaultFormatterFactory) box.getFormatterFactory();
+        InternationalFormatter formatter;
+        //Setting up all four formatters
+        try {
+            for (int i = 0; i < 3; i++) {
+                formatter = (InternationalFormatter) factory.getClass().getMethod(methods[i], null).invoke(factory);
+                formatter.setMinimum(minValue);
+                formatter.setMaximum(maxValue);
+                formatter.setAllowsInvalid(true);
+                formatter.setCommitsOnValidEdit(false);
+            }
+        } catch (SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MyTextUtilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return box;
     }
 }

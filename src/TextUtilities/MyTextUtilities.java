@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Ruslan Feshchenko
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package TextUtilities;
 
@@ -14,12 +25,13 @@ import javafx.scene.control.TextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.InternationalFormatter;
 import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.NumberFormatter;
 
 /**
  * Class for some text processing utilities
  *
  * @author Ruslan feshchenko
- * @version 0.1
+ * @version 1.0
  */
 public class MyTextUtilities {
 
@@ -186,6 +198,43 @@ public class MyTextUtilities {
         DefaultFormatterFactory factory = (DefaultFormatterFactory) box.getFormatterFactory();
         InternationalFormatter formatter;
         //Setting up all four formatters
+        try {
+            for (int i = 0; i < 3; i++) {
+                formatter = (InternationalFormatter) factory.getClass().getMethod(methods[i], null).invoke(factory);
+                formatter.setMinimum(minValue);
+                formatter.setMaximum(maxValue);
+                formatter.setAllowsInvalid(true);
+                formatter.setCommitsOnValidEdit(false);
+            }
+        } catch (SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MyTextUtilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return box;
+    }
+    
+    /**
+     * Returning a JFormattedTextField with a Double formatter installed with
+     * min and max values
+     *
+     * @param initValue
+     * @param minValue
+     * @param maxValue
+     * @return
+     */
+    public static JFormattedTextField getDoubleFormattedTextField(Double initValue,
+            Double minValue, Double maxValue) {
+        //Default formatter factory
+        DefaultFormatterFactory factory = new DefaultFormatterFactory (
+                new NumberFormatter (),
+                new NumberFormatter (),
+                new NumberFormatter ()
+        );
+        JFormattedTextField box = new JFormattedTextField(factory);
+        //Formatter getter names
+        String[] methods = {"getEditFormatter", "getDisplayFormatter", "getDefaultFormatter"};
+        
+        //Setting up all four formatters
+        InternationalFormatter formatter; 
         try {
             for (int i = 0; i < 3; i++) {
                 formatter = (InternationalFormatter) factory.getClass().getMethod(methods[i], null).invoke(factory);

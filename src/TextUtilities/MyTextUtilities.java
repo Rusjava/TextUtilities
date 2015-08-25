@@ -229,7 +229,8 @@ public class MyTextUtilities {
                 new NumberFormatter (),
                 new NumberFormatter ()
         );
-        JFormattedTextField box = new JFormattedTextField(factory);
+        JFormattedTextField box = new JFormattedTextField(factory, initValue);
+        
         //Formatter getter names
         String[] methods = {"getEditFormatter", "getDisplayFormatter", "getDefaultFormatter"};
         

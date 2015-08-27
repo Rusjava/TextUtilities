@@ -17,6 +17,7 @@
 package TextUtilities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import javax.swing.JTextField;
 import java.util.Map;
 import java.util.logging.Level;
@@ -222,12 +223,18 @@ public class MyTextUtilities {
      * @return
      */
     public static JFormattedTextField getDoubleFormattedTextField(Double initValue,
-            Double minValue, Double maxValue) {
+            Double minValue, Double maxValue, boolean scientific) {
+        DecimalFormat format;
+        if (scientific) {
+            format = new DecimalFormat("0.####E00");
+        } else {
+            format = new DecimalFormat("0.####"); 
+        }
         //Default formatter factory
         DefaultFormatterFactory factory = new DefaultFormatterFactory (
-                new NumberFormatter (),
-                new NumberFormatter (),
-                new NumberFormatter ()
+                new NumberFormatter (format),
+                new NumberFormatter (format),
+                new NumberFormatter (format)
         );
         JFormattedTextField box = new JFormattedTextField(factory, initValue);
         

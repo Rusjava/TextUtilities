@@ -220,6 +220,7 @@ public class MyTextUtilities {
      * @param initValue
      * @param minValue
      * @param maxValue
+     * @param scientific
      * @return
      */
     public static JFormattedTextField getDoubleFormattedTextField(Double initValue,

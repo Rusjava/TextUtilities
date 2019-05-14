@@ -32,7 +32,7 @@ import javax.swing.text.NumberFormatter;
  * Class for some text processing utilities
  *
  * @author Ruslan feshchenko
- * @version 1.0
+ * @version 1.1
  */
 public class MyTextUtilities {
 
@@ -211,6 +211,36 @@ public class MyTextUtilities {
             Logger.getLogger(MyTextUtilities.class.getName()).log(Level.SEVERE, null, ex);
         }
         return box;
+    }
+    
+    /**
+     * Changing the initial, min and max values of an integer JFormattedTextField object
+     *
+     * @param box
+     * @param initValue
+     * @param minValue
+     * @param maxValue
+     */
+    public static void changeIntegerFormattedTextField(JFormattedTextField box, Integer initValue,
+            Integer minValue, Integer maxValue) {
+        box.setValue(initValue);
+        //Formatter getter names
+        String[] methods = {"getEditFormatter", "getDisplayFormatter", "getDefaultFormatter"};
+        //Default formatter factory
+        DefaultFormatterFactory factory = (DefaultFormatterFactory) box.getFormatterFactory();
+        InternationalFormatter formatter;
+        //Setting up all four formatters
+        try {
+            for (int i = 0; i < 3; i++) {
+                formatter = (InternationalFormatter) factory.getClass().getMethod(methods[i], null).invoke(factory);
+                formatter.setMinimum(minValue);
+                formatter.setMaximum(maxValue);
+                formatter.setAllowsInvalid(true);
+                formatter.setCommitsOnValidEdit(false);
+            }
+        } catch (SecurityException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(MyTextUtilities.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**
